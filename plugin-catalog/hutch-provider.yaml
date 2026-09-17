@@ -1,0 +1,18 @@
+name: hutch-provider
+repo: https://github.com/smwbev/hutch-provider
+sha: bf4056486348b9154316a79b14c0f2d291a07ead
+description: Hutch model provider -- a private OpenAI-compatible relay (CLIProxyAPI) behind the
+  OpenRouter wire policy. Registers a first-class hutch provider with an authenticated live model
+  catalog; inherits reasoning passthrough and sticky routing from the bundled OpenRouter profile.
+maintainer: smwbev
+tier: community
+category: models
+docs_url: https://github.com/smwbev/hutch-provider#readme
+version: "1.1.0"
+capabilities:
+  provides_tools: []
+  provides_hooks: []
+  provides_middleware: []
+  requires_env:
+  - HUTCH_API_KEY
+  - HUTCH_BASE_URL

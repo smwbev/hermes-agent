@@ -1,0 +1,19 @@
+name: hutch-media
+repo: https://github.com/smwbev/hutch-media
+sha: b48d6cce99d0a814db1e0c7fcbb361d51a0899cd
+description: Hutch relay media backends -- image generation (/images/generations and /images/edits)
+  and async video generation (submit/poll with auth-bound polling) on a private OpenAI-compatible
+  relay (CLIProxyAPI); model catalogs discovered live from the relay's /models. Companion to
+  hutch-provider.
+maintainer: smwbev
+tier: community
+category: models
+docs_url: https://github.com/smwbev/hutch-media#readme
+version: "1.4.0"
+capabilities:
+  provides_tools: []
+  provides_hooks: []
+  provides_middleware: []
+  requires_env:
+  - HUTCH_API_KEY
+  - HUTCH_BASE_URL
