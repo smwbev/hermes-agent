@@ -1,0 +1,48 @@
+name: PR33494 non-container candidate verification
+on:
+  push:
+    branches: [ci-verify/pr33494/4e0873e2316e4f18bb9e06c4f834aa1b-identity-v2-8cafdec15b]
+permissions:
+  contents: read
+concurrency:
+  group: pr33494-noncontainer-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  targeted:
+    if: github.repository == 'smwbev/hermes-agent'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout reviewed CI-only wrapper
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+          path: wrapper
+      - name: Checkout exact unmodified candidate
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          repository: smwbev/hermes-agent
+          ref: 8cafdec15b85d44dde39ee14a73a33bc92543464
+          persist-credentials: false
+          path: candidate
+      - name: Install pinned uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
+        with:
+          version: '0.12.13'
+          enable-cache: false
+      - name: Install candidate locked dependencies
+        working-directory: candidate
+        # Source-only tests import the exact checkout via PYTHONPATH in the probe.
+        # Skip its editable build; refuse all sdists to avoid unlocked build deps.
+        run: uv sync --locked --python 3.14.4 --group dev --no-install-project --no-build
+      - name: Verify unchanged full targeted manifest on genuine VM
+        working-directory: candidate
+        run: .venv/bin/python -B ../wrapper/.github/scripts/pr33494_noncontainer.py
+      - name: Upload evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: pr33494-8cafdec15b-${{ github.run_id }}-${{ github.run_attempt }}
+          path: candidate/verification-evidence/
+          if-no-files-found: warn
+          retention-days: 30
